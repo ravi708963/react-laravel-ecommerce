@@ -5,9 +5,12 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
     const [form, setForm] = useState({ name: '', email: '', password: '' });
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState('');
 
-    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+        setErrors((prev) => ({ ...prev, [e.target.name]: null }));
+    }
     const navigate = useNavigate();
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -18,7 +21,14 @@ export default function Register() {
             toast.success("User Registered successfully");
 
         } catch (err) {
-            setError('Registration failed');
+            if (err.response && err.response.status === 422) {
+                const responseErrors = err.response.data.errors;
+                setErrors(responseErrors);
+
+            } else {
+                toast.error("Registration failed");
+            }
+
         }
     };
 
@@ -28,19 +38,25 @@ export default function Register() {
 
             <div className="mb-3">
                 <label htmlFor="name" className="form-label">Name</label>
-                <input className="form-control" name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
+                <input className={`form-control ${errors.name ? 'is-invalid' : ''}`} name="name" value={form.name} onChange={handleChange} placeholder="Name" />
+                {errors.name && <div className="invalid-feedback">{errors.name[0]}</div>}
+
             </div>
 
             <div className="mb-3">
                 <label htmlFor="email" className="form-label">Email</label>
-                <input className="form-control" name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" required />
+                <input className={`form-control ${errors.email ? 'is-invalid' : ''}`} name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" />
+                {errors.email && <div className="invalid-feedback">{errors.email[0]}</div>}
+
             </div>
             <div className="mb-3">
                 <label htmlFor="password" className="form-label">Password</label>
-                <input className="form-control" name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" required />
+                <input className={`form-control ${errors.password ? 'is-invalid' : ''}`} name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" />
+                {errors.password && <div className="invalid-feedback">{errors.password[0]}</div>}
+
             </div>
             <button type="submit" className="btn btn-success w-100">Register</button>
-            {error && <p>{error}</p>}
+
         </form>
     );
 }

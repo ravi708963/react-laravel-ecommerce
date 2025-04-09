@@ -7,14 +7,18 @@ import { AuthContext } from '../context/AuthContext';
 const ProductForm = ({ refresh }) => {
     const navigate = useNavigate();
     const { token } = useContext(AuthContext);
+    const [errors, setErrors] = useState({});
+
 
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState(false);
     const [form, setForm] = useState({ name: '', description: '', price: '', sale_price: '' });
     const [image, setImage] = useState(null);
 
-    const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
-
+    const handleChange = e => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+        setErrors((prev) => ({ ...prev, [e.target.name]: null }));
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -43,7 +47,14 @@ const ProductForm = ({ refresh }) => {
             }
             navigate("/");
         } catch (err) {
-            toast.error("Validation failed");
+            if (err.response && err.response.status === 422) {
+                const responseErrors = err.response.data.errors;
+                setErrors(responseErrors);
+            } else if (err.response && err.response.status === 403) {
+                toast.error("You are not authorized to perform this action.");
+            } else {
+                toast.error("Something went wrong.");
+            }
         }
     };
 
@@ -75,35 +86,38 @@ const ProductForm = ({ refresh }) => {
                 <label htmlFor="name" className="form-label">Product Name</label>
                 <input
                     name="name"
-                    className='form-control'
+                    className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                     value={form.name}
                     onChange={handleChange}
                     placeholder="Name"
-                    required
+
                 />
+                {errors.name && <div className="invalid-feedback">{errors.name[0]}</div>}
             </div>
             <div className="mb-3">
                 <label htmlFor="description" className="form-label">Description</label>
                 <textarea
                     name="description"
-                    className='form-control'
+                    className={`form-control ${errors.description ? 'is-invalid' : ''}`}
                     value={form.description}
                     onChange={handleChange}
                     placeholder="Description"
-                    required
+
                 />
+                {errors.description && <div className="invalid-feedback">{errors.description[0]}</div>}
             </div>
             <div className="mb-3">
                 <label htmlFor="price" className="form-label">Price</label>
                 <input
                     name="price"
                     type="number"
-                    className='form-control'
+                    className={`form-control ${errors.price ? 'is-invalid' : ''}`}
                     value={form.price}
                     onChange={handleChange}
                     placeholder="Price"
-                    required
+
                 />
+                {errors.price && <div className="invalid-feedback">{errors.price[0]}</div>}
             </div>
             <div className="mb-3">
                 <label htmlFor="sale_price" className="form-label">Sale Price</label>

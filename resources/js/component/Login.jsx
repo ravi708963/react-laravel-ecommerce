@@ -8,7 +8,7 @@ export default function Login() {
     const { login } = useContext(AuthContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -19,7 +19,13 @@ export default function Login() {
             navigate("/products");
             toast.success("Logged In Successfully.");
         } catch (err) {
-            setError('Login failed');
+            if (err.response && err.response.status === 422) {
+                const responseErrors = err.response.data.errors;
+                setErrors(responseErrors);
+
+            } else {
+                toast.error("Log in failed");
+            }
         }
     };
 
@@ -29,16 +35,26 @@ export default function Login() {
 
             <div className="mb-3">
                 <label htmlFor="email" className="form-label">Email</label>
-                <input className='form-control' type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
+                <input name='email' className={`form-control ${errors.email ? 'is-invalid' : ''}`} type="email" value={email} onChange={e => {
+
+                    setEmail(e.target.value);
+                    setErrors((prev) => ({ ...prev, [e.target.name]: null }));
+
+                }} placeholder="Email" />
+                {errors.email && <div className="invalid-feedback">{errors.email[0]}</div>}
             </div>
             <div className="mb-3">
                 <label htmlFor="password" className="form-label">Password</label>
-                <input className='form-control' type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
+                <input className={`form-control ${errors.password ? 'is-invalid' : ''}`} type="password" name='password' value={password} onChange={e => {
+                    setPassword(e.target.value);
+                    setErrors((prev) => ({ ...prev, [e.target.name]: null }));
+                }
+                }
+                    placeholder="Password" />
+                {errors.password && <div className="invalid-feedback">{errors.password[0]}</div>}
             </div>
 
             <button type="submit" className="btn btn-primary w-100">Login</button>
-
-            {error && <p>{error}</p>}
         </form>
     );
 }
