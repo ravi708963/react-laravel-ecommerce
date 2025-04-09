@@ -1,29 +1,74 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+🛍️ Laravel + React E-commerce Project
+This is a featured e-commerce module built using Laravel (API) and React (frontend). The React components are rendered inside the Laravel Blade template and use JWT Authentication for protected routes and role-based access control (admin/user).
 
-## About Laravel
+🚀 Features
+JWT-based login & registration
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Admin-only Product CRUD with image upload (only admin can see the edit and delete button on products, and i have enable a button to add product by admin , it also visible for admin only)
+Product list with pagination
+Add to cart functionality (user-based, database saved)
+Quantity updates and remove items from cart
+Protected routes via React Router
+Bootstrap-styled responsive UI
+React inside Laravel blade (no separate Vite/CRA)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+📂 Project Structure
+├── app/
+├── public/
+│   └── storage/ (linked to store product images)
+├── resources/
+│   └── js/ (React components)
+├── routes/
+│   └── api.php (API endpoints)
+├── database/
+│   ├── migrations/
+│   └── seeders/ (Admin user seeder)
+├── .env
+└── package.json
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+🛠️ Requirements
+PHP >= 8.0
+Composer
+Node.js & npm
+MySQL / SQLite
+Laravel 10+
+JWT Auth (tymon/jwt-auth)
+Bootstrap (bootstrap via npm)
+React & React Router
 
-## Learning Laravel
+📦 Installation
+git clone https://github.com/.....
+cd react-laravel-ecommerce
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Backend Setup (Laravel)
+composer install
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+php artisan jwt:secret
+php artisan db:seed --class=AdminSeeder
+
+database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ecommerce
+DB_USERNAME=root
+DB_PASSWORD=
+
+Frontend Setup (React inside Laravel)
+npm install
+npm run dev
+
+👨‍💻 Start the App
+php artisan serve
+
+Visit http://127.0.0.1:8000
+login admin by 
+emai - admin@gmail.com
+password - 123456
+
 
 You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
