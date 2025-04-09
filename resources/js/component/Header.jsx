@@ -3,12 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
-    const isLoggedIn = !!localStorage.getItem("token");
-    const { user } = useContext(AuthContext);
+    const { user, token, logout } = useContext(AuthContext);
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
+        logout();
         navigate("/login");
     };
 
@@ -40,7 +40,7 @@ const Header = () => {
                     </ul>
 
                     <ul className="navbar-nav">
-                        {isLoggedIn ? (
+                        {token ? (
                             <>
                                 {
                                     user?.is_admin == true && (
